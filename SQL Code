@@ -1,0 +1,22 @@
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+
+public class SurveyBackend {
+    private static final String DB_URL = "jdbc:mysql://localhost:3306/OnlineSurvey";
+    private static final String DB_USER = "root";
+    private static final String DB_PASSWORD = "password"; // Replace with your MySQL password
+
+    // Method to save survey response to the database
+    public boolean saveSurveyResponse(String rating, String recommend, String comments) {
+        String insertQuery = "INSERT INTO survey_responses (rating, recommend, comments) VALUES (?, ?, ?)";
+        try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
+             PreparedStatement preparedStatement = connection.prepareStatement(insertQuery)) {
+
+            preparedStatement.setString(1, rating);
+            preparedStatement.setString(2, recommend);
+            preparedStatement.setString(3, comments);
+
+            int rowsInserted = preparedStatement.executeUpdate();
+            return rowsInserted > 0; // Return true if data is successfully inserted
+        } catch (Exception e) {
